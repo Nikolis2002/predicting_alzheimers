@@ -8,8 +8,7 @@ import math
 import matplotlib.pyplot as plt
 import argparse
 from pymongo import MongoClient
-import gridfs
-import io, os, pprint
+import os, pprint
 from datetime import datetime
 
 client = MongoClient("mongodb://localhost:27017/")
@@ -105,8 +104,8 @@ def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss
     early_stopping=tf.keras.callbacks.EarlyStopping(
         monitor='val_loss',
         patience=5,
-        min_delta=0.001,
-        restore_best_weights=True #eraly stopping to avoid overfitting 
+        min_delta=0.0005,
+        restore_best_weights=True #early stopping to avoid overfitting 
     )
     
     #the model itself, the number of output neurons is 1 because the patient has either alzheimers or not and using sigmoid as the activation champion we achieve the 
@@ -143,6 +142,7 @@ def create_parser():
     parser.add_argument("--loss_func",type=str,default="cross entropy",help="The loss function options: cross entropy,MSE")
     parser.add_argument("--hid_layer_func",type=str,default="Relu",help="Activation function for hidden layers options:Relu,Tanh,Silu")
     parser.add_argument("--r",type=float,default=None,help="Regulazation factor")
+    parser.add_argument("--all_weights",type=bool,default=False,help="Specify if you want to see the diifrent val loss bettwen all possible wights or to do normal training")
 
     args = parser.parse_args()
 
@@ -171,6 +171,97 @@ def plot(round,training_loss,val_loss,folder):
     plt.savefig(filename,format='png')
     plt.close()
 
+
+def run_for_many_layers(input_shape,filtered_input,output,args):
+    hidden_layers={'half':math.ceil(input_shape/2), #diffrent choices for the neuron of the hidden layers all viable
+                   "two thirds":math.ceil((2*input_shape)/3),
+                   "same":input_shape,
+                   "double":2*input_shape}
+    
+    val_loss_table=np.zeros((args.epochs, len(hidden_layers)))
+    
+    for i,num_Layer in enumerate(hidden_layers):
+        five_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=44) #5-cv fold with balanced output class data(StatifiedKFold does that)
+
+        for training_idx,val_idx in five_fold.split(filtered_input,output):
+
+            input_train,input_val=filtered_input[training_idx],filtered_input[val_idx]
+            output_train,output_val=output[training_idx],output[val_idx]
+
+            model,_=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r)
+            training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1)
+
+            val_loss_table[:,i] += training.history['val_loss']
+
+    val_loss_table /= 5
+    
+    plt.plot(val_loss_table, label=hidden_layers.keys())
+    plt.title(f"Average validation loss for each number of hiiden layers")
+    
+    plt.xlabel('Epoch')
+    plt.ylabel('Binary Cross Entropy')
+    plt.legend()
+    plt.show()
+
+def test_lr_and_moment(filtered_input,output,args):
+    testers=[(0.001,0.2),(0.001,0.6),(0.05,0.6),(0.1,0.6)]
+
+    val_loss_table=np.zeros((args.epochs, len(testers)))
+    
+    for i,_ in enumerate(testers):
+        five_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=44) #5-cv fold with balanced output class data(StatifiedKFold does that)
+
+        for training_idx,val_idx in five_fold.split(filtered_input,output):
+
+            input_train,input_val=filtered_input[training_idx],filtered_input[val_idx]
+            output_train,output_val=output[training_idx],output[val_idx]
+
+            model,_=nn_model(filtered_input.shape[1],args.optimizer,testers[i][0],testers[i][1],args.num_of_layers,args.hid_layer_func,args.loss_func,args.r)
+            training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1)
+
+            val_loss_table[:,i] += training.history['val_loss']
+
+    val_loss_table /= 5
+
+    plt.plot(val_loss_table, label=list(map(lambda x: f"h={x[0]}, m={x[1]}", testers)))
+    plt.title(f"Average validation loss for each number of hiiden layers")
+    
+    plt.xlabel('Epoch')
+    plt.ylabel('Binary Cross Entropy')
+    plt.legend()
+    plt.show()
+
+
+
+def test_reg(filtered_input,output,args):
+    testers=[0.0001,0.001,0.01]
+
+    val_loss_table=np.zeros((args.epochs, len(testers)))
+    
+    for i,_ in enumerate(testers):
+        five_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=44) #5-cv fold with balanced output class data(StatifiedKFold does that)
+
+        for training_idx,val_idx in five_fold.split(filtered_input,output):
+
+            input_train,input_val=filtered_input[training_idx],filtered_input[val_idx]
+            output_train,output_val=output[training_idx],output[val_idx]
+
+            
+            model,_=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,testers[i])
+            training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1)
+
+            val_loss_table[:,i] += training.history['val_loss']
+
+    val_loss_table /= 5
+
+    plt.plot(val_loss_table, label=list(map(lambda x: f"r={x}", testers)))
+    plt.title(f"Average validation loss for each number of hiiden layers")
+    
+    plt.xlabel('Epoch')
+    plt.ylabel('Binary Cross Entropy')
+    plt.legend()
+    plt.show()
+    
 
 
 def main():
@@ -202,49 +293,54 @@ def main():
     print(filtered_input.shape)       
     print(filtered_input.shape[1]) 
 
-    five_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=44) #5-cv fold with balanced output class data(StatifiedKFold does that)
-    round=1
-    evals=[]
+    if args.all_weights == True:
+        run_for_many_layers(filtered_input.shape[1],filtered_input,output,args)
+    else:
+        five_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=44) #5-cv fold with balanced output class data(StatifiedKFold does that)
+        round=1
+        evals=[]
+        val_json={}
 
-    #for every split train the nn and evaluate it 
-    for training_idx,val_idx in five_fold.split(filtered_input,output):
+        #for every split train the nn and evaluate it 
+        for training_idx,val_idx in five_fold.split(filtered_input,output):
 
-        input_train,input_val=filtered_input[training_idx],filtered_input[val_idx]
-        output_train,output_val=output[training_idx],output[val_idx]
+            input_train,input_val=filtered_input[training_idx],filtered_input[val_idx]
+            output_train,output_val=output[training_idx],output[val_idx]
 
-        model,early_stop=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r)
-        training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1,callbacks=[early_stop])
+            model,early_stop=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r)
+            training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1,callbacks=[early_stop])
 
-        plot(round,training.history['loss'],training.history['val_loss'],folder)
+            plot(round,training.history['loss'],training.history['val_loss'],folder)
 
-        evaluation=model.evaluate(input_val,output_val,verbose=0)
-        print(f"Round {round}: Loss:{evaluation[0]}, Accuracy:{evaluation[1]}")
-        round+=1
-        evals.append(evaluation)
-    
-    #write the results to mongodb for further analysis
-    evals_np=np.array(evals)
-    evals_json={
-        "params":{
-            "optimizer":args.optimizer,
-            "momentum":args.momentum,
-            "learning rate":args.lr,
-            "epochs":args.epochs,
-            "number of hidden layers":args.num_of_layers,
-            "hidden layer activation function":args.hid_layer_func,
-            "regulazation rate":args.r,
-            "loss function":args.loss_func
-        },
-        "Average loss": np.mean(evals_np[:, 0]),
-        "Average Accuracy": np.mean(evals_np[:, 1]),
-        "Average MSE":   np.mean(evals_np[:, 2]),
-    }
 
-    printer=pprint.PrettyPrinter(indent=4)
-    print('\n')
-    print("|--------FINAL RESULTS----------|")
-    printer.pprint(evals_json)
-    average_results.insert_one(evals_json)
+            evaluation=model.evaluate(input_val,output_val,verbose=0)
+            print(f"Round {round}: Loss:{evaluation[0]}, Accuracy:{evaluation[1]}")
+            round+=1
+            evals.append(evaluation)
+        
+        #write the results to mongodb for further analysis
+        evals_np=np.array(evals)
+        evals_json={
+            "params":{
+                "optimizer":args.optimizer,
+                "momentum":args.momentum,
+                "learning rate":args.lr,
+                "epochs":args.epochs,
+                "number of hidden layers":args.num_of_layers,
+                "hidden layer activation function":args.hid_layer_func,
+                "regulazation rate":args.r,
+                "loss function":args.loss_func
+            },
+            "Average loss": np.mean(evals_np[:, 0]),
+            "Average Accuracy": np.mean(evals_np[:, 1]),
+            "Average MSE":   np.mean(evals_np[:, 2]),
+        }
+
+        printer=pprint.PrettyPrinter(indent=4)
+        print('\n')
+        print("|--------FINAL RESULTS----------|")
+        printer.pprint(evals_json)
+        average_results.insert_one(evals_json)
     #print("\nΜέσο Loss:", np.mean(evals_np[:, 0]))
     #print("Μέση Accuracy:", np.mean(evals_np[:, 1]))
     #rint("Μέσο MSE:", np.mean(evals_np[:,2]))
