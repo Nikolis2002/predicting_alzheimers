@@ -102,7 +102,7 @@ def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss
 
     early_stopping=tf.keras.callbacks.EarlyStopping(
         monitor='val_loss',
-        patience=10,
+        patience=5,
         min_delta=0.0005,
         restore_best_weights=True #early stopping to avoid overfitting 
     )
@@ -145,6 +145,7 @@ def create_parser():
     parser.add_argument("--test_lr_moment",type=bool,default=False,help="Test learning and momentum")
     parser.add_argument("--test_reg",type=bool,default=False,help="Test regularazation rate")
     parser.add_argument("--normal",type=bool,default=True,help="Normal training you pass ALL the paramaters")
+    parser.add_argument("--compare_losses",type=bool,default=False,help="Toggle it to true if you want to see the evaluation losses seperatly")
 
     args = parser.parse_args()
 
@@ -277,6 +278,9 @@ def normal_training(filtered_input,output,args,folder):
         evals=[]
         val_json={}
         #val_loss_table=np.zeros((args.epochs, 2))
+        val_loss_table=[]
+        loss_table=[]
+        early_stop_epochs=[]
 
         #for every split train the nn and evaluate it 
         for training_idx,val_idx in five_fold.split(filtered_input,output):
@@ -292,20 +296,65 @@ def normal_training(filtered_input,output,args,folder):
             early_stop_epochs.append(stop_epoch)
 
             plot(round,training.history['loss'],training.history['val_loss'],folder)
-            val_loss_table.append(training.history['val-loss'])
+            val_loss_table.append(training.history['val_loss'])
+            loss_table.append(training.history['loss'])
 
 
             evaluation=model.evaluate(input_val,output_val,verbose=0)
             print(f"Round {round}: Loss:{evaluation[0]}, Accuracy:{evaluation[1]}")
             round+=1
             evals.append(evaluation)
-        val_loss_table /= 5
+        #val_loss_table /= 5
 
-        #plt.plot(val_loss_table, label=['Train', 'Validation'])
-        #plt.title(f"Average Results")
-        #plt.xlabel('Epoch')
-        #plt.legend()
-        #plt.show()
+        if args.compare_losses == True:
+            for i, history in enumerate(val_loss_table):
+                epochs = range(1, len(history) + 1)
+                plt.plot(epochs, history, label=f'Fold {i+1}')
+            
+            plt.xlabel('Epoch')
+            plt.ylabel('Validation Loss')
+            plt.title('Validation Loss per Fold with Stopping Epochs')
+            plt.legend()
+            plt.show()
+        else:
+            # Determine the maximum number of epochs (or use args.epochs)
+            max_epochs = args.epochs
+
+            # Pad each fold's validation loss history if it stopped early
+            padded_val_histories = []
+            padded_train_histories = []
+            for train_history,val_history in zip(loss_table,val_loss_table):
+                if len(train_history) < max_epochs:
+                    pad_length = max_epochs - len(train_history)
+                    padded_train = train_history + [train_history[-1]] * pad_length
+                else:
+                    padded_train = train_history
+                
+                if len(val_history) < max_epochs:
+                    pad_length = max_epochs - len(val_history)
+                    padded_val = history + [history[-1]] * pad_length
+                else:
+                    padded_val = history
+                
+                padded_train_histories.append(padded_train)
+                padded_val_histories.append(padded_val)
+            
+            # Compute the average validation loss at each epoch across folds
+            avg_loss = np.mean(padded_val_histories, axis=0)
+            avg_val_loss = np.mean(padded_val_histories, axis=0)
+            epochs = range(1, len(avg_val_loss) + 1)
+            
+            # Plot the average validation loss curve
+            plt.figure(figsize=(10, 6))
+            plt.plot(epochs, avg_val_loss, label='Average Validation Loss', color='blue')
+            plt.plot(epochs, avg_loss, label='Average Validation Loss', color='blue')
+            plt.xlabel('Epoch')
+            plt.ylabel('Validation Loss')
+            plt.title('Average Validation and Training Loss Over 5-Fold CV')
+            plt.legend()
+            plt.show()
+
+
 
         
         #write the results to mongodb for further analysis
