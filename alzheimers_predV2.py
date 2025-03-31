@@ -290,9 +290,8 @@ def normal_training(filtered_input,output,args,folder):
 
             model,early_stop=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r)
             training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1,callbacks=[early_stop])
-            training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1,callbacks=[early_stop])
 
-            stop_epoch=len(training.history)
+            stop_epoch=len(training.history['loss'])
             early_stop_epochs.append(stop_epoch)
 
             plot(round,training.history['loss'],training.history['val_loss'],folder)
@@ -318,7 +317,8 @@ def normal_training(filtered_input,output,args,folder):
             plt.show()
         else:
             # Determine the maximum number of epochs (or use args.epochs)
-            max_epochs = args.epochs
+            max_epochs = max(early_stop_epochs)
+            print(f"This is the max epochs:{max_epochs}")
 
             # Pad each fold's validation loss history if it stopped early
             padded_val_histories = []
@@ -328,26 +328,26 @@ def normal_training(filtered_input,output,args,folder):
                     pad_length = max_epochs - len(train_history)
                     padded_train = train_history + [train_history[-1]] * pad_length
                 else:
-                    padded_train = train_history
+                    padded_train = train_history[:max_epochs]
                 
                 if len(val_history) < max_epochs:
                     pad_length = max_epochs - len(val_history)
                     padded_val = val_history + [val_history[-1]] * pad_length
                 else:
-                    padded_val = val_history
+                    padded_val = val_history[:max_epochs]
                 
                 padded_train_histories.append(padded_train)
                 padded_val_histories.append(padded_val)
             
             # Compute the average validation loss at each epoch across folds
-            avg_loss = np.mean(padded_val_histories, axis=0)
+            avg_loss = np.mean(padded_train_histories, axis=0)
             avg_val_loss = np.mean(padded_val_histories, axis=0)
-            epochs = range(1, len(avg_val_loss) + 1)
+            epochs = range(1, len(avg_loss) + 1)
             
             # Plot the average validation loss curve
             plt.figure(figsize=(10, 6))
-            plt.plot(epochs, avg_val_loss, label='Average Validation Loss', color='blue')
-            plt.plot(epochs, avg_loss, label='Average Validation Loss', color='blue')
+            plt.plot(epochs, avg_val_loss, label='Average Validation Loss', color='green')
+            plt.plot(epochs, avg_loss, label='Average Validation Loss', color='red')
             plt.xlabel('Epoch')
             plt.ylabel('Validation Loss')
             plt.title('Average Validation and Training Loss Over 5-Fold CV')
