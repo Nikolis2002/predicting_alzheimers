@@ -270,8 +270,8 @@ def normal_training(filtered_input,output,args,folder):
         five_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42) #5-cv fold with balanced output class data(StatifiedKFold does that)
         round=1
         evals=[]
-        val_json={}
-        val_loss_table=np.zeros((args.epochs, 2))
+        val_loss_table=[]
+        early_stop_epochs=[]
 
         #for every split train the nn and evaluate it 
         for training_idx,val_idx in five_fold.split(filtered_input,output):
@@ -280,12 +280,13 @@ def normal_training(filtered_input,output,args,folder):
             output_train,output_val=output[training_idx],output[val_idx]
 
             model,early_stop=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r)
-            training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1)
+            training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1,callbacks=[early_stop])
 
-            val_loss_table[:,0] += training.history['loss']
-            val_loss_table[:,1] += training.history['val_loss']
+            stop_epoch=len(training.history)
+            early_stop_epochs.append(stop_epoch)
 
             plot(round,training.history['loss'],training.history['val_loss'],folder)
+            val_loss_table.append(training.history['val-loss'])
 
 
             evaluation=model.evaluate(input_val,output_val,verbose=0)
@@ -294,11 +295,19 @@ def normal_training(filtered_input,output,args,folder):
             evals.append(evaluation)
         val_loss_table /= 5
 
-        plt.plot(val_loss_table, label=['Train', 'Validation'])
-        plt.title(f"Average Results")
+        for i, history in enumerate(val_loss_table):
+            epochs = range(1, len(history) + 1)
+            plt.plot(epochs, history, label=f'Fold {i+1}')
+            # Mark the stopping epoch using the value you recorded
+            plt.axvline(x=early_stop_epochs[i], linestyle='--', color='gray', alpha=0.5)
+            plt.text(early_stop_epochs[i] + 1, history[-1], f'Stop: {early_stop_epochs[i]}', fontsize=8)
+
         plt.xlabel('Epoch')
+        plt.ylabel('Validation Loss')
+        plt.title('Validation Loss per Fold with Stopping Epochs')
         plt.legend()
         plt.show()
+
 
         
         #write the results to mongodb for further analysis
