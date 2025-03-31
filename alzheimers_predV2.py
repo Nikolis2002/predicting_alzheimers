@@ -2,7 +2,6 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, OneHotEncoder
 from sklearn.model_selection import StratifiedKFold
 import tensorflow as tf
-from tensorflow.keras import regularizers
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -90,7 +89,7 @@ def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss
     if r==None:
        l2=None
     elif r is not None:
-        l2=regularizers.L2(r) #L2 regulazation if you want 
+        l2=tf.keras.regularizers.L2(r) #L2 regulazation if you want 
     else:
         raise ValueError("Unsupported option")
      
@@ -192,8 +191,8 @@ def run_for_many_layers(input_shape,filtered_input,output,args):
             input_train,input_val=filtered_input[training_idx],filtered_input[val_idx]
             output_train,output_val=output[training_idx],output[val_idx]
 
-            model,early_stop=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,layer,args.hid_layer_func,args.loss_func,args.r)
-            training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1,callbacks=[early_stop])
+            model,_=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,layer,args.hid_layer_func,args.loss_func,args.r)
+            training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1)
 
             val_loss_table[:,i] += training.history['val_loss']
             round+=1
@@ -281,10 +280,10 @@ def normal_training(filtered_input,output,args,folder):
             output_train,output_val=output[training_idx],output[val_idx]
 
             model,early_stop=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r)
-            training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1,)
+            training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1)
 
-            #val_loss_table[:,0] += training.history['loss']
-            #val_loss_table[:,1] += training.history['val_loss']
+            val_loss_table[:,0] += training.history['loss']
+            val_loss_table[:,1] += training.history['val_loss']
 
             plot(round,training.history['loss'],training.history['val_loss'],folder)
 
@@ -295,11 +294,11 @@ def normal_training(filtered_input,output,args,folder):
             evals.append(evaluation)
         val_loss_table /= 5
 
-        #plt.plot(val_loss_table, label=['Train', 'Validation'])
-        #plt.title(f"Average Results")
-        #plt.xlabel('Epoch')
-        #plt.legend()
-        #plt.show()
+        plt.plot(val_loss_table, label=['Train', 'Validation'])
+        plt.title(f"Average Results")
+        plt.xlabel('Epoch')
+        plt.legend()
+        plt.show()
 
         
         #write the results to mongodb for further analysis
@@ -328,6 +327,48 @@ def normal_training(filtered_input,output,args,folder):
     #print("\nΜέσο Loss:", np.mean(evals_np[:, 0]))
     #print("Μέση Accuracy:", np.mean(evals_np[:, 1]))
     #rint("Μέσο MSE:", np.mean(evals_np[:,2])
+
+def test_split():
+    args=create_parser()
+
+    original_data=pd.read_csv("alzheimers_disease_data.csv")
+    input=original_data.drop(["Diagnosis","PatientID","DoctorInCharge"], axis=1)
+    output=original_data["Diagnosis"].to_numpy()
+
+    categorical_cols,contin_cols=seperate_columns(input)
+    bin_cols=choose_binCols(input) #binary columns dont need any pre-processing
+
+    #pre-process the columns, the continuous data is pre-processed with these 3 functions
+    if args.pre_processing == "centering":
+        pre_processed_input=centering_scikit(input,contin_cols)
+    elif args.pre_processing == "z-score":
+        pre_processed_input=z_score_scikit(input,contin_cols)
+    elif args.pre_processing == "min-max":
+        pre_processed_input=min_max_scikit(input,contin_cols)
+    else:
+        raise ValueError("Unsupported option")
+    
+    encoded_input=one_hot_encoding(input,categorical_cols) #the categorical data are being one hot encoded
+    binary_input=input[bin_cols].to_numpy()
+
+    filtered_input=np.concatenate([pre_processed_input,encoded_input,binary_input], axis=1) #concatenate the input to do 5-fold on them and put the nn 
+    print(filtered_input)
+    print(filtered_input.shape)       
+    print(filtered_input.shape[1]) 
+
+    five_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42) #5-cv fold with balanced output class data(StatifiedKFold does that)
+
+
+    #for every split train the nn and evaluate it 
+    for fold, (train_idx, val_idx) in enumerate(five_fold.split(filtered_input, output), start=1):
+        train_classes, train_counts = np.unique(output[train_idx], return_counts=True)
+        val_classes, val_counts = np.unique(output[val_idx], return_counts=True)
+        
+        print(f"Fold {fold}:")
+        print("Training set class distribution:", dict(zip(train_classes, train_counts)))
+        print("Validation set class distribution:", dict(zip(val_classes, val_counts)))
+        print("-" * 30)
+
     
 
 
@@ -351,7 +392,7 @@ def main():
         pre_processed_input=min_max_scikit(input,contin_cols)
     else:
         raise ValueError("Unsupported option")
-
+    
     encoded_input=one_hot_encoding(input,categorical_cols) #the categorical data are being one hot encoded
     binary_input=input[bin_cols].to_numpy()
 
@@ -374,6 +415,8 @@ def main():
 if __name__=='__main__':
 
     main()
+    #test_split()
+
 
 
 

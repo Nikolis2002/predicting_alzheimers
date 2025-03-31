@@ -17,6 +17,7 @@
 \usepackage{listings}
 \usepackage{fmtcount}
 \usepackage{titlesec}
+\usepackage{minted}
 \usepackage[a4paper, margin=1in]{geometry}
 
 %--------------------------------------------------------------------
@@ -34,8 +35,8 @@
 
 \title{\textbf{Αναφορά: Πρόβλεψη Alzheimer’s με Χρήση Νευρωνικών Δικτύων}}
 \author{\\
-\large Όνομα Επώνυμο \\
-\large Α.Μ. φοιτητή: XXXXX \\
+\large Νίκος Ανδριανόπουλος \\
+\large Α.Μ. φοιτητή: 1084637 \\
 \large \texttt{email@upatras.gr}
 }
 \date{\today}
@@ -61,21 +62,24 @@
 \subsection{(α) Κωδικοποίηση και προεπεξεργασία δεδομένων}
 Στο σύνολο δεδομένων εντοπίστηκαν κατηγορικές και ποσοτικές μεταβλητές, οπότε:
 \begin{itemize}
-    \item \textbf{One-hot encoding:} Εφαρμόστηκε στις κατηγορικές μεταβλητές, όπως \emph{φύλο}, \emph{εθνικότητα}, κ.λπ.
-    \item \textbf{Κανονικοποίηση/Τυποποίηση:} (Π.χ.) Χρησιμοποιήθηκε η \emph{Min-Max} κανονικοποίηση για να φέρουμε τις τιμές στην κλίμακα [0, 1], μειώνοντας έτσι τυχόν πόλωση στις τιμές. 
+    \item \textbf{One-hot encoding:} Εφαρμόστηκε στις κατηγορικές στήλες:\emph{Εthnicity}, \emph{Education Level}, 
+    \item \textbf{Κανονικοποίηση/Τυποποίηση:} (Π.χ.) Χρησιμοποιήθηκε η \emph{z-score} μέθοδος για να παρέχω στις στήλες με συνεχείς τιμές στατιστικές ιδιότητες.
+    \item Για τις στήλες που έχουν δυαδικές τιμές δεν κάνω κάποια αλλαγή γιατί δεν υπάρχει κίνδυνος υπερκτίμησης της πληροφορίας.
     % ή
     % Χρησιμοποιήθηκε η τυποποίηση (z-score) ώστε κάθε χαρακτηριστικό να έχει μέση τιμή 0 και τυπική απόκλιση 1.
 \end{itemize}
 
+Στις συνεχείς στήλες βέβαια μπορώ να κάνω  centering και min-max, αλλά η τυποποίηση είναι καλύτερη και απο τις 2 μεθόδους γιατί κεντράρει αλλά και κλιμακώνει τυατόχρονα 
+τα δεδομένα, όλα τα χαρακτηριστικά συνεισφέρουν ομοιόμορφα στην μάθηση.Στην πράξη:
+
+
 \noindent
 \textbf{Ενδεικτικός ψευδοκώδικας}:
-\begin{lstlisting}[language=Python]
-# Example: Min-Max Normalization of a single feature X
-X_norm = (X - X.min()) / (X.max() - X.min())
-
-# Example: Standardization (Z-score)
-X_standard = (X - mean(X)) / std(X)
-\end{lstlisting}
+\begin{minted}[frame=single, linenos]{python}
+    def greet(name):
+        print(f"Hello, {name}!")
+    \end{minted}
+    
 
 \subsection{(β) Διασταυρούμενη Επικύρωση (5-fold CV)}
 Για την αξιόπιστη εκτίμηση των επιδόσεων των μοντέλων, χρησιμοποιήθηκε \emph{5-fold
