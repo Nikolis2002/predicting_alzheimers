@@ -332,9 +332,9 @@ def normal_training(filtered_input,output,args,folder):
                 
                 if len(val_history) < max_epochs:
                     pad_length = max_epochs - len(val_history)
-                    padded_val = history + [history[-1]] * pad_length
+                    padded_val = val_history + [val_history[-1]] * pad_length
                 else:
-                    padded_val = history
+                    padded_val = val_history
                 
                 padded_train_histories.append(padded_train)
                 padded_val_histories.append(padded_val)
