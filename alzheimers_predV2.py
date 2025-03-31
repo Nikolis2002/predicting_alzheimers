@@ -75,7 +75,7 @@ def one_hot_encoding(panda,columns):
     return encoded_columns
 
 # the neural network architecture
-def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss_func,r):
+def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss_func,r,deep=0):
     
     hidden_layers={'half':math.ceil(input_shape/2), #diffrent choices for the neuron of the hidden layers all viable
                    "two thirds":math.ceil((2*input_shape)/3),
@@ -109,11 +109,19 @@ def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss
     print(f"Running the model for:{hidden_layers[num_of_layers]} neurons")
     #the model itself, the number of output neurons is 1 because the patient has either alzheimers or not and using sigmoid as the activation champion we achieve the 
     #the binary clissification
-    model = tf.keras.models.Sequential([
-        tf.keras.Input(shape=(input_shape,)),
-        tf.keras.layers.Dense(hidden_layers[num_of_layers], activation=activation_options[hid_layer_func],kernel_regularizer=l2),
-        tf.keras.layers.Dense(1, activation='sigmoid')
-    ])
+    if deep ==0:
+        model = tf.keras.models.Sequential([
+            tf.keras.Input(shape=(input_shape,)),
+            tf.keras.layers.Dense(hidden_layers[num_of_layers], activation=activation_options[hid_layer_func],kernel_regularizer=l2),
+            tf.keras.layers.Dense(1, activation='sigmoid')
+        ])
+    else:
+        model = tf.keras.models.Sequential([
+            tf.keras.Input(shape=(input_shape,)),
+            tf.keras.layers.Dense(math.ceil(hidden_layers[num_of_layers]/4), activation=activation_options[hid_layer_func],kernel_regularizer=l2),
+            tf.keras.layers.Dense(math.ceil(hidden_layers[num_of_layers]), activation=activation_options[hid_layer_func],kernel_regularizer=l2),
+            tf.keras.layers.Dense(1, activation='sigmoid')])
+
     
     #optimizer options
     if optimizer == "adam":
@@ -288,7 +296,7 @@ def normal_training(filtered_input,output,args,folder):
             input_train,input_val=filtered_input[training_idx],filtered_input[val_idx]
             output_train,output_val=output[training_idx],output[val_idx]
 
-            model,early_stop=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r)
+            model,early_stop=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r,0)
             training=model.fit(input_train, output_train,validation_data=(input_val, output_val) ,epochs=args.epochs, batch_size=32, verbose=1,callbacks=[early_stop])
 
             stop_epoch=len(training.history['loss'])
@@ -347,7 +355,7 @@ def normal_training(filtered_input,output,args,folder):
             # Plot the average validation loss curve
             plt.figure(figsize=(10, 6))
             plt.plot(epochs, avg_val_loss, label='Average Validation Loss', color='green')
-            plt.plot(epochs, avg_loss, label='Average Validation Loss', color='red')
+            plt.plot(epochs, avg_loss, label='Average Training Loss', color='red')
             plt.xlabel('Epoch')
             plt.ylabel('Validation Loss')
             plt.title('Average Validation and Training Loss Over 5-Fold CV')
