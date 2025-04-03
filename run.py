@@ -47,7 +47,7 @@ class GPUExperimentRunner:
                 "--epochs", "600",
                 "--num_of_layers", "double",
                 "--momentum", "0.6",
-                "--lr", "0.05",
+                "--lr", "0.001",
                 "--r", str(r)
             ]
 

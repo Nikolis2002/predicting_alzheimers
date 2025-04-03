@@ -27,6 +27,7 @@ def choose_intCols(panda):
 def choose_floatCols(panda):
     return panda.select_dtypes(include=["float64"])
 
+
 def choose_binCols(panda):
     binary_columns=[col for col in panda.columns if panda[col].nunique() == 2]
 
@@ -54,15 +55,16 @@ def min_max_scikit(panda,columns):
 def centering_scikit(panda,columns):
     scaler = StandardScaler(with_std=False)  
     
-    centered_data = scaler.fit_transform(panda[columns])
+    centered_data = scaler.fit_transform(panda[columns].astype('float32'))
     
     return centered_data
 
 def z_score_scikit(panda,columns):
     scaler = StandardScaler()  
     
+    cont_val=panda[columns]
     zscored_data = scaler.fit_transform(panda[columns])
-    
+    print("Output dtype:", zscored_data.dtype) 
     return zscored_data
 
 
@@ -100,12 +102,13 @@ def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss
     metrics={"Accuracy":'accuracy',
              "MSE":tf.keras.metrics.MeanSquaredError(name='MSE')} #the metrics of the nn
 
-    early_stopping=tf.keras.callbacks.EarlyStopping(
-        monitor='val_loss',
-        patience=15,
-        min_delta=0.0001,
-        restore_best_weights=True #early stopping to avoid overfitting 
-    )
+    early_stopping = tf.keras.callbacks.EarlyStopping(
+    monitor='val_loss',  # Track validation loss
+    patience=10,
+    min_delta=0.001,     # Require at least 0.001 improvement
+    #mode='min',          
+    restore_best_weights=True  # Revert to best model weights
+)
     print(f"Running the model for:{hidden_layers[num_of_layers]} neurons")
     #the model itself, the number of output neurons is 1 because the patient has either alzheimers or not and using sigmoid as the activation champion we achieve the 
     #the binary clissification
@@ -118,9 +121,9 @@ def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss
     else:
         model = tf.keras.models.Sequential([
             tf.keras.Input(shape=(input_shape,)),
-            tf.keras.layers.Dense(math.ceil(hidden_layers[num_of_layers]/4), activation=activation_options[hid_layer_func],kernel_regularizer=l2),
             tf.keras.layers.Dense(math.ceil(hidden_layers[num_of_layers]/2), activation=activation_options[hid_layer_func],kernel_regularizer=l2),
-            tf.keras.layers.Dense(math.ceil(hidden_layers[num_of_layers]/2), activation=activation_options[hid_layer_func],kernel_regularizer=l2),
+            tf.keras.layers.Dense(math.ceil(2*hidden_layers[num_of_layers]), activation=activation_options[hid_layer_func],kernel_regularizer=l2),
+            #tf.keras.layers.Dense(math.ceil(hidden_layers[num_of_layers]), activation=activation_options[hid_layer_func],kernel_regularizer=l2),
             tf.keras.layers.Dense(1, activation='sigmoid')])
 
     
@@ -290,6 +293,7 @@ def normal_training(filtered_input,output,args,folder):
         val_loss_table=[]
         loss_table=[]
         early_stop_epochs=[]
+        batch_size=32
 
         #for every split train the nn and evaluate it 
         for training_idx,val_idx in five_fold.split(filtered_input,output):
@@ -298,7 +302,7 @@ def normal_training(filtered_input,output,args,folder):
             output_train,output_val=output[training_idx],output[val_idx]
 
             model,early_stop=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r,args.more_layers)
-            training=model.fit(input_train, output_train,validation_data=(input_val, output_val),epochs=args.epochs, batch_size=32, verbose=1,callbacks=[early_stop])
+            training=model.fit(input_train, output_train,validation_data=(input_val, output_val),epochs=args.epochs, batch_size=batch_size, verbose=1,callbacks=[early_stop])
 
             stop_epoch=len(training.history['loss'])
             early_stop_epochs.append(stop_epoch)
@@ -313,7 +317,7 @@ def normal_training(filtered_input,output,args,folder):
             round+=1
             evals.append(evaluation)
         #val_loss_table /= 5
-
+        max_epochs = max(early_stop_epochs)
         if args.compare_losses == True:
             for i, history in enumerate(val_loss_table):
                 epochs = range(1, len(history) + 1)
@@ -328,7 +332,7 @@ def normal_training(filtered_input,output,args,folder):
             plt.show()
         else:
             # Determine the maximum number of epochs (or use args.epochs)
-            max_epochs = max(early_stop_epochs)
+           
             print(f"This is the max epochs:{max_epochs}")
 
             # Pad each fold's validation loss history if it stopped early
@@ -372,11 +376,14 @@ def normal_training(filtered_input,output,args,folder):
         #write the results to mongodb for further analysis
         evals_np=np.array(evals)
         evals_json={
+            "run":"float32,max",
+            "chosen_weight":"two thirds",
             "params":{
                 "optimizer":args.optimizer,
                 "momentum":args.momentum,
                 "learning rate":args.lr,
                 "epochs":args.epochs,
+                "run_epochs":max_epochs,
                 "number of hidden layers":args.num_of_layers,
                 "hidden layer activation function":args.hid_layer_func,
                 "regulazation rate":args.r,
@@ -402,6 +409,7 @@ def test_split():
     original_data=pd.read_csv("alzheimers_disease_data.csv")
     input=original_data.drop(["Diagnosis","PatientID","DoctorInCharge"], axis=1)
     output=original_data["Diagnosis"].to_numpy()
+    print(output)
 
     categorical_cols,contin_cols=seperate_columns(input)
     bin_cols=choose_binCols(input) #binary columns dont need any pre-processing
@@ -446,7 +454,9 @@ def main():
     
     original_data=pd.read_csv("alzheimers_disease_data.csv")
     input=original_data.drop(["Diagnosis","PatientID","DoctorInCharge"], axis=1)
+    
     output=original_data["Diagnosis"].to_numpy()
+    print(output)
 
     categorical_cols,contin_cols=seperate_columns(input)
     bin_cols=choose_binCols(input) #binary columns dont need any pre-processing
@@ -462,13 +472,21 @@ def main():
         raise ValueError("Unsupported option")
     
     encoded_input=one_hot_encoding(input,categorical_cols) #the categorical data are being one hot encoded
-    categorical_data=input[categorical_cols].to_numpy()
-    binary_input=input[bin_cols].to_numpy()
+    categorical_data=input[categorical_cols].to_numpy().astype(np.float32)
+    binary_input=input[bin_cols].to_numpy().astype(np.float32)
+    pre_processed_input = pre_processed_input.astype(np.float32)
 
-    filtered_input=np.concatenate([pre_processed_input,categorical_data,binary_input], axis=1) #concatenate the input to do 5-fold on them and put the nn 
+    print("pre_processed_input:", pre_processed_input.dtype)  # Should be float32
+    print("categorical_data:", categorical_data.dtype)        # Often int64 (problem!)
+    print("binary_input:", binary_input.dtype)                # Should be float32
+
+
+    filtered_input=np.concatenate([pre_processed_input,encoded_input,binary_input], axis=1).astype(np.float32) #concatenate the input to do 5-fold on them and put the nn 
+
     print(filtered_input)
     print(filtered_input.shape)       
     print(filtered_input.shape[1]) 
+    print(filtered_input.dtype)  # Should output 'float32'
 
     if args.all_weights == True:
         run_for_many_layers(filtered_input.shape[1],filtered_input,output,args)
