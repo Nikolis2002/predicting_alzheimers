@@ -48,7 +48,20 @@ class GPUExperimentRunner:
                 "--num_of_layers", "double",
                 "--momentum", "0.6",
                 "--lr", "0.001",
-                "--r", str(r)
+                "--r", str(r),
+                "--use_l2","True"
+            ]
+        
+        for r in [0.0001, 0.001, 0.01]:
+            yield [
+                "python3", "alzheimers_predV2.py",
+                "--optimizer", "SGD",
+                "--epochs", "600",
+                "--num_of_layers", "double",
+                "--momentum", "0.6",
+                "--lr", "0.001",
+                "--r", str(r),
+                "--use_l1","True"
             ]
 
     def run_experiment(self, cmd):

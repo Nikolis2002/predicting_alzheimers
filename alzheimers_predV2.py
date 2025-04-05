@@ -13,6 +13,8 @@ from datetime import datetime
 client = MongoClient("mongodb://localhost:27017/")
 database=client["alzheimers"]
 average_results=database["average_results"]
+deep_collection=database["deep"]
+#deep_collection=database["deep_v2"]
 
 #some actions based on the columsn of the dataset
 def remove_cols(panda,columns,inplace):
@@ -77,7 +79,7 @@ def one_hot_encoding(panda,columns):
     return encoded_columns
 
 # the neural network architecture
-def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss_func,r,deep=0):
+def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss_func,use_l2,use_l1,r=0.001,deep=False,deep_layers=None):
     
     hidden_layers={'half':math.ceil(input_shape/2), #diffrent choices for the neuron of the hidden layers all viable
                    "two thirds":math.ceil((2*input_shape)/3),
@@ -87,11 +89,13 @@ def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss
     activation_options={"Relu":"relu", #activation options of hidden layer
                         "Tanh":"tanh",
                         "Silu":tf.nn.silu}
-    l2=None
-    if r==None:
-       l2=None
-    elif r is not None:
-        l2=tf.keras.regularizers.L2(r) #L2 regulazation if you want 
+    l=None
+    if use_l2==False and use_l1 ==False:
+       l=None
+    elif use_l2 ==True:
+        l=tf.keras.regularizers.L2(r) #L2 regulazation if you want 
+    elif use_l1 == True:
+        l=tf.keras.regularizers.L1(r)
     else:
         raise ValueError("Unsupported option")
      
@@ -115,16 +119,19 @@ def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss
     if deep ==False:
         model = tf.keras.models.Sequential([
             tf.keras.Input(shape=(input_shape,)),
-            tf.keras.layers.Dense(hidden_layers[num_of_layers], activation=activation_options[hid_layer_func],kernel_regularizer=l2),
+            tf.keras.layers.Dense(hidden_layers[num_of_layers], activation=activation_options[hid_layer_func],kernel_regularizer=l),
             tf.keras.layers.Dense(1, activation='sigmoid')
         ])
     else:
-        model = tf.keras.models.Sequential([
-            tf.keras.Input(shape=(input_shape,)),
-            tf.keras.layers.Dense(math.ceil(hidden_layers[num_of_layers]/2), activation=activation_options[hid_layer_func],kernel_regularizer=l2),
-            tf.keras.layers.Dense(math.ceil(2*hidden_layers[num_of_layers]), activation=activation_options[hid_layer_func],kernel_regularizer=l2),
-            #tf.keras.layers.Dense(math.ceil(hidden_layers[num_of_layers]), activation=activation_options[hid_layer_func],kernel_regularizer=l2),
-            tf.keras.layers.Dense(1, activation='sigmoid')])
+        print(f"Running for layers:{deep_layers}")
+        model = tf.keras.Sequential()
+        model.add(tf.keras.Input(shape=(input_shape,)))
+           
+        for layer in deep_layers[1:]:
+            model.add(tf.keras.layers.Dense(layer, activation=activation_options[hid_layer_func],kernel_regularizer=l))
+        
+    
+        model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
 
     
     #optimizer options
@@ -139,6 +146,8 @@ def nn_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_layer_func,loss
     model.compile(optimizer=optimizer, loss=options_loss[loss_func], metrics=[metrics["Accuracy"],metrics['MSE']])
 
     return model, early_stopping
+
+
 
 def create_parser():
     #argumetn parser to be able to test the training process with diffrent variables
@@ -159,15 +168,20 @@ def create_parser():
     parser.add_argument("--normal",type=bool,default=True,help="Normal training you pass ALL the paramaters")
     parser.add_argument("--compare_losses",type=bool,default=False,help="Toggle it to true if you want to see the evaluation losses seperatly")
     parser.add_argument("--more_layers",type=bool,default=False,help="Test the network with more layers")
+    parser.add_argument("--use_l2",type=bool,default=False,help="Use L2")
+    parser.add_argument("--use_l1",type=bool,default=False,help="Use L1")
+    parser.add_argument('--hidden_layers', type=str, default="",
+                        help="Comma-separated list of hidden layer sizes, e.g., '64,32' or '128,64,32'")
 
     args = parser.parse_args()
+
 
     return args
 
 #create a folder where the plots are stored  based on the variables of the run and the date
-def create_folder(optimizer,momentum,lr,hidd_layers,hidd_func,loss_func,r):
+def create_folder(optimizer,momentum,lr,hidd_layers,hidd_func,loss_func,r,hidden_layers):
     date_str = datetime.now().strftime("%m-%d_%H-%M-%S")
-    folder_name = f"screenshots/{optimizer}_mom{momentum}_lr{lr}_{hidd_layers}_{hidd_func}_{loss_func}_{r}_{date_str}"
+    folder_name = f"screenshots_l1/{optimizer}_mom{momentum}_lr{lr}_{hidd_layers}_{hidd_func}_{loss_func}_{r}_more_layers_{hidden_layers}{date_str}"
 
     os.makedirs(folder_name, exist_ok=True)
 
@@ -284,7 +298,7 @@ def test_reg(filtered_input,output,args):
     plt.legend()
     plt.show()
 
-def normal_training(filtered_input,output,args,folder):
+def normal_training(filtered_input,output,args,folder,hidden_layers):
         five_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=44) #5-cv fold with balanced output class data(StatifiedKFold does that)
         round=1
         evals=[]
@@ -301,7 +315,7 @@ def normal_training(filtered_input,output,args,folder):
             input_train,input_val=filtered_input[training_idx],filtered_input[val_idx]
             output_train,output_val=output[training_idx],output[val_idx]
 
-            model,early_stop=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r,args.more_layers)
+            model,early_stop=nn_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.use_l2,args.use_l1,args.r,args.more_layers,hidden_layers)
             training=model.fit(input_train, output_train,validation_data=(input_val, output_val),epochs=args.epochs, batch_size=batch_size, verbose=1,callbacks=[early_stop])
 
             stop_epoch=len(training.history['loss'])
@@ -376,8 +390,11 @@ def normal_training(filtered_input,output,args,folder):
         #write the results to mongodb for further analysis
         evals_np=np.array(evals)
         evals_json={
-            "run":"float32,max",
-            "chosen_weight":"two thirds",
+            "use L2":args.use_l2,
+            "use L1":args.use_l1,
+            "multiple layers":args.more_layers,
+            "choosen architecture":args.hidden_layers,
+            "chosen_weight":"double",
             "params":{
                 "optimizer":args.optimizer,
                 "momentum":args.momentum,
@@ -398,7 +415,11 @@ def normal_training(filtered_input,output,args,folder):
         print('\n')
         print("|--------FINAL RESULTS----------|")
         printer.pprint(evals_json)
-        average_results.insert_one(evals_json)
+
+        if args.more_layers == False:
+            average_results.insert_one(evals_json)
+        else:
+            deep_collection.insert_one(evals_json)
     #print("\nΜέσο Loss:", np.mean(evals_np[:, 0]))
     #print("Μέση Accuracy:", np.mean(evals_np[:, 1]))
     #rint("Μέσο MSE:", np.mean(evals_np[:,2])
@@ -450,8 +471,26 @@ def test_split():
 
 def main():
     args=create_parser() 
-    folder=create_folder(args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r)
-    
+
+    print(f"Raw hidden_layers argument: '{args.hidden_layers}' (type: {type(args.hidden_layers)})")
+
+    hidden_layers = []
+    if args.hidden_layers.strip():  # Check for non-empty string after stripping whitespace
+        try:
+            hidden_layers = [int(n.strip()) for n in args.hidden_layers.split(',') if n.strip()]
+            if not hidden_layers:
+                print("⚠ Warning: --hidden_layers contained only commas/whitespace, using no hidden layers")
+            else:
+                print(f"✓ Using hidden layers: {hidden_layers}")
+        except ValueError as e:
+            print(f"❌ Error: Invalid layer sizes in --hidden_layers '{args.hidden_layers}'. Use comma-separated integers.")
+            raise
+    else:
+        print("ℹ No hidden layers specified - using default architecture")
+
+    folder=create_folder(args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r,hidden_layers)
+
+        
     original_data=pd.read_csv("alzheimers_disease_data.csv")
     input=original_data.drop(["Diagnosis","PatientID","DoctorInCharge"], axis=1)
     
@@ -495,7 +534,7 @@ def main():
     elif args.test_reg == True:
         test_reg(filtered_input,output,args)
     elif args.normal == True:
-        normal_training(filtered_input,output,args,folder)
+        normal_training(filtered_input,output,args,folder,hidden_layers)
 
 
 
