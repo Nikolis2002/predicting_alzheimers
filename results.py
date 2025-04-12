@@ -65,9 +65,11 @@ plt.show()
 
 # === 4. Plot 2: Accuracy of all "double" entries by LR & Momentum ===
 double_df = df[df['num_hidden_layers'] == 'double'].copy()
+
 double_df['label'] = double_df.apply(
     lambda row: f"lr={row['learning_rate']}, m={row['momentum']}", axis=1
 )
+double_df.drop_duplicates(subset=['label'], inplace=True)
 
 plt.figure(figsize=(10, 6))
 bars = plt.bar(double_df['label'], double_df['accuracy'])
@@ -109,7 +111,7 @@ plt.show()
 if not df[df['use_l1'] == True].empty:
     best_l1 = df[df['use_l1'] == True].loc[df[df['use_l1'] == True]['accuracy'].idxmax()]
 
-    print("\n🏆 Best L1 Regularized Result:")
+    print("\nBest L1  Result:")
     print(f"✔ Accuracy: {best_l1['accuracy']:.4f}")
     print(f"✔ Architecture: {best_l1.get('chosen_weight', 'N/A')}")
     print(f"✔ Reg rate: {best_l1.get('reg_rate', 'N/A')}")
@@ -125,7 +127,7 @@ if not df[df['use_l1'] == True].empty:
 if not df[df['use_l2'] == True].empty:
     best_l2 = df[df['use_l2'] == True].loc[df[df['use_l2'] == True]['accuracy'].idxmax()]
 
-    print("\n🏆 Best L2 Regularized Result:")
+    print("\nBest L2  Result:")
     print(f"✔ Accuracy: {best_l2['accuracy']:.4f}")
     print(f"✔ Architecture: {best_l2.get('chosen_weight', 'N/A')}")
     print(f"✔ Reg rate: {best_l2.get('reg_rate', 'N/A')}")

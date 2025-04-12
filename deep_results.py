@@ -6,7 +6,7 @@ import seaborn as sns
 # Connect to MongoDB
 client = MongoClient("mongodb://localhost:27017/")
 db = client["alzheimers"]  
-collection = db["deep_v2"]  
+collection = db["deep_L1"]  #put l2 here to see l2 results
 
 # Fetch documents
 results = list(collection.find())
@@ -61,9 +61,7 @@ for doc in results:
 # Convert to DataFrame
 df = pd.DataFrame(data)
 
-# ---- 📊 PLOTS ----
 
-# ✅ Plot: Accuracy by Strategy
 plt.figure(figsize=(10,6))
 sns.lineplot(data=df, x="Total Neurons", y="Accuracy", hue="Strategy", marker="o")
 plt.title("Accuracy vs Total Neurons by Strategy")
@@ -73,7 +71,6 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 
-# ✅ Plot: Accuracy by Number of Layers (2 vs 3)
 plt.figure(figsize=(8,6))
 sns.boxplot(data=df, x="Num Layers", y="Accuracy")
 plt.title("Accuracy Distribution by Layer Count")
@@ -82,7 +79,6 @@ plt.ylabel("Accuracy")
 plt.tight_layout()
 plt.show()
 
-# ✅ Plot: Run Epochs vs Accuracy, colored by Num Layers
 plt.figure(figsize=(10,6))
 sns.scatterplot(data=df, x="Run Epochs", y="Accuracy", hue="Num Layers", style="Strategy", s=100)
 plt.title("Run Epochs vs Accuracy")
@@ -90,7 +86,14 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 
-# ✅ Optional: Print Top 5 Best-Performing Architectures
-top = df.sort_values(by="Accuracy", ascending=False).head(5)
-print("\n🏆 Top 5 Best Architectures:")
-print(top[["Architecture", "Strategy", "Num Layers", "Run Epochs", "Accuracy"]])
+# Sort by accuracy in descending order
+top_sorted = df.sort_values(by="Accuracy", ascending=False)
+
+# Print best result
+print("Best configuration based on Accuracy:")
+print(top_sorted[["Architecture", "Strategy", "Num Layers", "Run Epochs", "Accuracy","MSE","Loss"]].head(5))
+
+# Print worst result
+print("\nWorst configuration based on Accuracy:")
+print(top_sorted[["Architecture", "Strategy", "Num Layers", "Run Epochs", "Accuracy","MSE","Loss"]].tail(5))
+

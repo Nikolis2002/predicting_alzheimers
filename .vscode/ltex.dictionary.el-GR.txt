@@ -1,0 +1,5 @@
+centering
+min-max
+loss
+z-score
+υπερεκπεδεύται

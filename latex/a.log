@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2024.10.28)  30 MAR 2025 20:05
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2024.10.28)  12 APR 2025 21:26
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -665,91 +665,176 @@ runsystem(command -v pygmentize && touch a.aex)...executed.
 
 runsystem(rm a.aex)...executed.
 
- (./a.aux)
+ (./a.aux
+
+LaTeX Warning: Label `fig:sub2' multiply defined.
+
+
+LaTeX Warning: Label `sub@fig:sub2' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:two_thirds' multiply defined.
+
+
+LaTeX Warning: Label `fig:two_thirds' multiply defined.
+
+
+LaTeX Warning: Label `fig:acc_vs_epochs' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:half' multiply defined.
+
+
+LaTeX Warning: Label `fig:same' multiply defined.
+
+
+LaTeX Warning: Label `fig:two_thirds' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:half' multiply defined.
+
+
+LaTeX Warning: Label `fig:same' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:half' multiply defined.
+
+
+LaTeX Warning: Label `fig:same' multiply defined.
+
+
+LaTeX Warning: Label `fig:same' multiply defined.
+
+
+LaTeX Warning: Label `fig:same' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+
+LaTeX Warning: Label `fig:double' multiply defined.
+
+)
 \openout1 = `a.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 33.
-LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 33.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 59.
+LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 59.
  (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
 
 Package fontspec Info: Adjusting the maths setup (use [no-math] to avoid
 (fontspec)             this).
 
 \symlegacymaths=\mathgroup4
 LaTeX Font Info:    Overwriting symbol font `legacymaths' in version `bold'
-(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 33.
-LaTeX Font Info:    Redeclaring math accent \acute on input line 33.
-LaTeX Font Info:    Redeclaring math accent \grave on input line 33.
-LaTeX Font Info:    Redeclaring math accent \ddot on input line 33.
-LaTeX Font Info:    Redeclaring math accent \tilde on input line 33.
-LaTeX Font Info:    Redeclaring math accent \bar on input line 33.
-LaTeX Font Info:    Redeclaring math accent \breve on input line 33.
-LaTeX Font Info:    Redeclaring math accent \check on input line 33.
-LaTeX Font Info:    Redeclaring math accent \hat on input line 33.
-LaTeX Font Info:    Redeclaring math accent \dot on input line 33.
-LaTeX Font Info:    Redeclaring math accent \mathring on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \colon on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \Delta on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \Theta on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \Xi on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \Pi on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \Phi on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \Psi on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \Omega on input line 33.
-LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 33.
-LaTeX Font Info:    Redeclaring symbol font `operators' on input line 33.
+(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 59.
+LaTeX Font Info:    Redeclaring math accent \acute on input line 59.
+LaTeX Font Info:    Redeclaring math accent \grave on input line 59.
+LaTeX Font Info:    Redeclaring math accent \ddot on input line 59.
+LaTeX Font Info:    Redeclaring math accent \tilde on input line 59.
+LaTeX Font Info:    Redeclaring math accent \bar on input line 59.
+LaTeX Font Info:    Redeclaring math accent \breve on input line 59.
+LaTeX Font Info:    Redeclaring math accent \check on input line 59.
+LaTeX Font Info:    Redeclaring math accent \hat on input line 59.
+LaTeX Font Info:    Redeclaring math accent \dot on input line 59.
+LaTeX Font Info:    Redeclaring math accent \mathring on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \colon on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 59.
+LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 59.
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 59.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 33.
+(Font)              `operators' in the math version `normal' on input line 59.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmr/m/n --> TU/TimesNewRoman(0)/m/n on input line 33.
+(Font)                  OT1/cmr/m/n --> TU/TimesNewRoman(0)/m/n on input line 59.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 33.
+(Font)              `operators' in the math version `bold' on input line 59.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/m/n on input line 33.
+(Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/m/n on input line 59.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/m/n on input line 33.
+(Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/m/n on input line 59.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/cmr/m/it --> TU/TimesNewRoman(0)/m/it on input line 33.
+(Font)                  OT1/cmr/m/it --> TU/TimesNewRoman(0)/m/it on input line 59.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/b/n on input line 33.
+(Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/b/n on input line 59.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 33.
+(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 59.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 33.
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 59.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/b/n on input line 33.
+(Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/b/n on input line 59.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/cmr/bx/it --> TU/TimesNewRoman(0)/b/it on input line 33.
+(Font)                  OT1/cmr/bx/it --> TU/TimesNewRoman(0)/b/it on input line 59.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 33.
+(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 59.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 33.
-Package hyperref Info: Link coloring OFF on input line 33.
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 59.
+Package hyperref Info: Link coloring OFF on input line 59.
  (./a.out) (./a.out)
 \@outlinefile=\write6
 \openout6 = `a.out'.
@@ -794,38 +879,210 @@ Package caption Info: End \AtBeginDocument code.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 44.
+(Font)              <12> on input line 70.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 44.
+(Font)              <8> on input line 70.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 44.
+(Font)              <6> on input line 70.
+(./a.toc
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <10.95> on input line 5.
+)
+\tf@toc=\write7
+\openout7 = `a.toc'.
+
+ [1
+
+]
 \openout4 = `a.pyg'.
 
-(./_minted-a/default.pygstyle) (./_minted-a/6CB631F161589998CA937DEA006F392EA8FA9B3BA203637183F0BD6ACE3AD8C5.pygtex
+ (./_minted-a/friendly.pygstyle) (./_minted-a/39A91BDD0F0E28024A6AE74767622C8F833CCD26EF13FBEA72DEAA18119173A8.pygtex
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 3.
+)
+\openout4 = `a.pyg'.
+
+ (./_minted-a/F22717A7F708658C02AEC9E8296B2358833CCD26EF13FBEA72DEAA18119173A8.pygtex)
+\openout4 = `a.pyg'.
+
+ (./_minted-a/2E7AEF7F5B8A1811FB4070C72BC8F8C8833CCD26EF13FBEA72DEAA18119173A8.pygtex) [2]
+\openout4 = `a.pyg'.
+
+ (./_minted-a/6E10633EC813D97222E104D93C83E69FA8FA9B3BA203637183F0BD6ACE3AD8C5.pygtex
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10.95> not available
 (Font)              Font shape `TU/lmtt/b/n' tried instead on input line 2.
 )
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 89.
- [1
+\openout4 = `a.pyg'.
 
-] [2] [3] [4] (./a.aux)
+ (./_minted-a/EA38A3E7FB478AEC04E9791B95A3F89CA8FA9B3BA203637183F0BD6ACE3AD8C5.pygtex)
+File: screenshots/SGD_mom0.0_lr0.001_two_thirds_Relu_cross entropy_None_more_layers_04_06_11_01_58/Plot.png Graphic file (type bmp)
+<screenshots/SGD_mom0.0_lr0.001_two_thirds_Relu_cross entropy_None_more_layers_04_06_11_01_58/Plot.png>
+LaTeX Info: Redefining \anw@print on input line 169.
+
+Missing character: There is no ʹ (U+0374) in font Times New Roman/OT:language=dflt;mapping=tex-text;!
+LaTeX Info: Redefining \anw@print on input line 169.
+Missing character: There is no ʹ (U+0374) in font Times New Roman/OT:language=dflt;mapping=tex-text;!
+LaTeX Info: Redefining \anw@print on input line 169.
+Missing character: There is no ʹ (U+0374) in font Times New Roman/OT:language=dflt;mapping=tex-text;!
+LaTeX Info: Redefining \anw@print on input line 169.
+Missing character: There is no ʹ (U+0374) in font Times New Roman/OT:language=dflt;mapping=tex-text;!
+File: screenshots/SGD_mom0.0_lr0.001_two_thirds_Relu_cross entropy_None_more_layers_04_06_11_06_53/Plot.png Graphic file (type bmp)
+<screenshots/SGD_mom0.0_lr0.001_two_thirds_Relu_cross entropy_None_more_layers_04_06_11_06_53/Plot.png>
+LaTeX Info: Redefining \anw@print on input line 175.
+Missing character: There is no ʹ (U+0374) in font Times New Roman/OT:language=dflt;mapping=tex-text;!
+LaTeX Info: Redefining \anw@print on input line 175.
+Missing character: There is no ʹ (U+0374) in font Times New Roman/OT:language=dflt;mapping=tex-text;!
+LaTeX Info: Redefining \anw@print on input line 175.
+Missing character: There is no ʹ (U+0374) in font Times New Roman/OT:language=dflt;mapping=tex-text;!
+LaTeX Info: Redefining \anw@print on input line 175.
+Missing character: There is no ʹ (U+0374) in font Times New Roman/OT:language=dflt;mapping=tex-text;!
+File: screenshots/SGD_mom0.0_lr0.001_two_thirds_Relu_cross entropy_None_more_layers_04_06_11_11_44/Plot.png Graphic file (type bmp)
+<screenshots/SGD_mom0.0_lr0.001_two_thirds_Relu_cross entropy_None_more_layers_04_06_11_11_44/Plot.png>
+LaTeX Info: Redefining \anw@print on input line 180.
+Missing character: There is no ʹ (U+0374) in font Times New Roman/OT:language=dflt;mapping=tex-text;!
+LaTeX Info: Redefining \anw@print on input line 180.
+Missing character: There is no ʹ (U+0374) in font Times New Roman/OT:language=dflt;mapping=tex-text;!
+LaTeX Info: Redefining \anw@print on input line 180.
+Missing character: There is no ʹ (U+0374) in font Times New Roman/OT:language=dflt;mapping=tex-text;!
+LaTeX Info: Redefining \anw@print on input line 180.
+Missing character: There is no ʹ (U+0374) in font Times New Roman/OT:language=dflt;mapping=tex-text;!
+[3]
+Overfull \hbox (10.77753pt too wide) in paragraph at lines 192--196
+[]\TU/TimesNewRoman(0)/m/n/10.95 Για την αξιόπιστη εκτίμηση των επιδόσεων των μοντέλων, χρησιμοποιήθηκε \TU/TimesNewRoman(0)/m/it/10.95 5-fold Cross Validation\TU/TimesNewRoman(0)/m/n/10.95 .Τα
+ []
+
+[4]
+\openout4 = `a.pyg'.
+
+ (./_minted-a/A11D1AE015DA9CA54D2A7EA2367765BFA8FA9B3BA203637183F0BD6ACE3AD8C5.pygtex
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <9> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 2.
+)
+\openout4 = `a.pyg'.
+
+ (./_minted-a/EBB7764087F3BD22F51909DE4AD73307A8FA9B3BA203637183F0BD6ACE3AD8C5.pygtex)
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/latex/screenshots/pr.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/latex/screenshots/pr.png>
+ [5]
+\openout4 = `a.pyg'.
+
+ (./_minted-a/0FCE35B225E5E7B7B3E5B295648425FA833CCD26EF13FBEA72DEAA18119173A8.pygtex [6])
+\openout4 = `a.pyg'.
+
+ (./_minted-a/FD5E5E988B61A872E0FC75881D6E8807833CCD26EF13FBEA72DEAA18119173A8.pygtex) [7]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/latex/screenshots/Figure_1.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/latex/screenshots/Figure_1.png>
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.0_lr0.001_double_Relu_cross entropy_None_04-03_21-34-38/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.0_lr0.001_double_Relu_cross entropy_None_04-03_21-34-38/Plot.png>
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.0_lr0.001_half_Relu_cross entropy_None_04-03_21-42-33/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.0_lr0.001_half_Relu_cross entropy_None_04-03_21-42-33/Plot.png>
+ [8]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.0_lr0.001_same_Relu_cross entropy_None_04-03_21-30-46/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.0_lr0.001_same_Relu_cross entropy_None_04-03_21-30-46/Plot.png>
+File: screenshots/SGD_mom0.0_lr0.001_two_thirds_Relu_cross entropy_None_more_layers_04_06_11_11_44/Plot.png Graphic file (type bmp)
+<screenshots/SGD_mom0.0_lr0.001_two_thirds_Relu_cross entropy_None_more_layers_04_06_11_11_44/Plot.png>
+ [9]
+File: screenshots/1.png Graphic file (type bmp)
+<screenshots/1.png>
+File: screenshots/2.png Graphic file (type bmp)
+<screenshots/2.png>
+ [10]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/latex/screenshots/SGD_mom0.0_lr0.001_two_thirds_Relu_cross entropy_None_more_layers_04-06_16-51-07/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/latex/screenshots/SGD_mom0.0_lr0.001_two_thirds_Relu_cross entropy_None_more_layers_04-06_16-51-07/Plot.png>
+ [11]
+\openout4 = `a.pyg'.
+
+ (./_minted-a/05C7B616FB5B19A246B141C317C1B742A8FA9B3BA203637183F0BD6ACE3AD8C5.pygtex)
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/latex/screenshots/Figure_2.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/latex/screenshots/Figure_2.png>
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.2_lr0.001_double_Relu_cross entropy_None_04-03_21-46-38/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.2_lr0.001_double_Relu_cross entropy_None_04-03_21-46-38/Plot.png>
+ [12]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_None_04-03_21-50-11/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_None_04-03_21-50-11/Plot.png>
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/latex/screenshots/SGD_mom0.6_lr0.05_double_Relu_cross entropy_None_more_layers_04-06_17-04-49/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/latex/screenshots/SGD_mom0.6_lr0.05_double_Relu_cross entropy_None_more_layers_04-06_17-04-49/Plot.png>
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.1_double_Relu_cross entropy_None_04-03_21-52-53/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.1_double_Relu_cross entropy_None_04-03_21-52-53/Plot.png>
+ [13] [14]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_0.0001_04_03_21_53_08/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_0.0001_04_03_21_53_08/Plot.png>
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_0.001_04_03_21_55_20/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_0.001_04_03_21_55_20/Plot.png>
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_0.01_04_03_21_57_50/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_0.01_04_03_21_57_50/Plot.png>
+ [15]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_0.0001_04_03_22_02_21/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_0.0001_04_03_22_02_21/Plot.png>
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_0.001_04-03_22_04_47/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_0.001_04-03_22_04_47/Plot.png>
+ [16]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_0.01_04_03_22_09_17/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/SGD_mom0.6_lr0.001_double_Relu_cross entropy_0.01_04_03_22_09_17/Plot.png>
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/last/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/last/Plot.png>
+ [17]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/latex/screenshots/Figure_3.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/latex/screenshots/Figure_3.png>
+ [18]
+Underfull \hbox (badness 10000) in paragraph at lines 634--636
+
+ []
+
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/5.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/5.png>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots_l1/best/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots_l1/best/Plot.png>
+[19]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots_l1/worst/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots_l1/worst/Plot.png>
+ [20]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/6.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/6.png>
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/7.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/7.png>
+ [21]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/8.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/8.png>
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[22]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/best/Plot.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/best/Plot.png>
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/9.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/9.png>
+ [23]
+File: /home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/10.png Graphic file (type bmp)
+</home/nikolis/Desktop/5o_etos/ai/predicting_alzheimers/screenshots/10.png>
+ [24] [25] [26]
+\openout4 = `a.pyg'.
+
+ (./_minted-a/D3AC06999DC207C7059D06B7C684334C33F5A3A255BCE7A01DEAF635ED04F3F2.pygtex) [27] (./a.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
+
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package rerunfilecheck Info: File `a.out' has not changed.
-(rerunfilecheck)             Checksum: A671E73A7EF02B8038C968E14074F900;5311.
+(rerunfilecheck)             Checksum: B25803A28E8569CDA09CA5AE710B864F;8277.
 runsystem(rm a.pyg)...executed.
 
  ) 
 Here is how much of TeX's memory you used:
- 30416 strings out of 474878
- 622440 string characters out of 5762515
- 1933627 words of memory out of 5000000
- 51987 multiletter control sequences out of 15000+600000
- 562297 words of font info for 76 fonts, out of 8000000 for 9000
+ 30870 strings out of 474878
+ 661627 string characters out of 5762515
+ 1934627 words of memory out of 5000000
+ 52363 multiletter control sequences out of 15000+600000
+ 562337 words of font info for 81 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 101i,7n,107p,614b,546s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 101i,9n,107p,614b,806s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on a.pdf (4 pages).
+Output written on a.pdf (27 pages).

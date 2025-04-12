@@ -30,7 +30,7 @@ class NeuronComboRunner:
             hidden_str = ",".join(str(n) for n in layers)
             
             cmd = [
-                "python3", "alzheimers_predV2.py",
+                "python3", "alzheimers_prediction.py",
                 "--optimizer", "SGD",
                 "--momentum", "0.6",
                 "--lr", "0.001",
@@ -45,7 +45,7 @@ class NeuronComboRunner:
 
     def run_experiment(self, cmd):
         self._clear_gpu_memory()
-        print(f"\n▶ Running: {' '.join(cmd)}")
+        print(f" Running: {' '.join(cmd)}")
         start_time = time.time()
 
         try:
@@ -59,11 +59,11 @@ class NeuronComboRunner:
             return True
 
         except subprocess.TimeoutExpired:
-            print(f"✗ Timeout after {time.time()-start_time:.1f}s")
+            print(f"Timeout after {time.time()-start_time:.1f}s")
             return False
 
         except subprocess.CalledProcessError as e:
-            print(f"✗ Failed with code {e.returncode}")
+            print(f"Failed with code {e.returncode}")
             return False
 
     def run_all(self):
@@ -76,7 +76,7 @@ class NeuronComboRunner:
                 success += 1
             time.sleep(1)
 
-        print(f"\n🎉 Completed {success}/{total} neuron architecture experiments")
+        print(f"\nCompleted {success}/{total} neuron architecture experiments")
 
 if __name__ == "__main__":
     runner = NeuronComboRunner()

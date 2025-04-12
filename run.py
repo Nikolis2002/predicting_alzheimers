@@ -22,7 +22,7 @@ class GPUExperimentRunner:
         # Phase 1: Test different layer configurations
         for layers in ["same", "double", "two thirds", "half"]:
             yield [
-                "python3", "alzheimers_predV2.py",
+                "python3", "alzheimers_prediction.py",
                 "--optimizer", "SGD",
                 "--epochs", "600",
                 "--num_of_layers", layers
@@ -31,7 +31,7 @@ class GPUExperimentRunner:
         # Phase 2: Test learning rate and momentum combinations
         for lr, momentum in [(0.001,0.2), (0.001,0.6), (0.05,0.6), (0.1,0.6)]:
             yield [
-                "python3", "alzheimers_predV2.py",
+                "python3", "alzheimers_prediction.py",
                 "--optimizer", "SGD",
                 "--epochs", "600",
                 "--num_of_layers", "double",
@@ -42,7 +42,7 @@ class GPUExperimentRunner:
         # Phase 3: Test r values
         for r in [0.0001, 0.001, 0.01]:
             yield [
-                "python3", "alzheimers_predV2.py",
+                "python3", "alzheimers_prediction.py",
                 "--optimizer", "SGD",
                 "--epochs", "600",
                 "--num_of_layers", "double",
@@ -54,7 +54,7 @@ class GPUExperimentRunner:
         
         for r in [0.0001, 0.001, 0.01]:
             yield [
-                "python3", "alzheimers_predV2.py",
+                "python3", "alzheimers_prediction.py",
                 "--optimizer", "SGD",
                 "--epochs", "600",
                 "--num_of_layers", "double",
@@ -68,7 +68,7 @@ class GPUExperimentRunner:
         """Run a single experiment with GPU cleanup"""
         self._clear_gpu_memory()
         
-        print(f"\n▶ Running: {' '.join(cmd)}")
+        print(f"\nRunning: {' '.join(cmd)}")
         start_time = time.time()
         
         try:
@@ -101,7 +101,7 @@ class GPUExperimentRunner:
                 success += 1
             time.sleep(1)  # Brief pause between experiments
         
-        print(f"\n🎉 Completed {success}/{total} experiments successfully")
+        print(f"\nCompleted {success}/{total} experiments successfully")
 
 if __name__ == "__main__":
     runner = GPUExperimentRunner()
