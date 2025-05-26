@@ -108,6 +108,8 @@ def neural_network_model(input_shape,optimizer,momentum,lr,num_of_layers,hid_lay
     min_delta=0.001,     # Require at least 0.001 improvement        
     restore_best_weights=True  # Revert to best model weights
 )
+    
+    
     print(f"Running the model for:{hidden_layers[num_of_layers]} neurons")
     #the model itself, the number of output neurons is 1 because the patient has either alzheimers or not and using sigmoid as the activation champion we achieve the 
     #the binary clissification
@@ -408,6 +410,14 @@ def normal_training(filtered_input,output,args,folder,hidden_layers):
         early_stop_epochs=[]
         batch_size=32
 
+        checkpoint = tf.keras.callbacks.ModelCheckpoint(
+            filepath='../best_model.keras',      
+            monitor='val_accuracy',         
+            mode='max',                       
+            save_best_only=True,              
+            verbose=1
+        )
+
         #for every split train the nn and evaluate it 
         for training_idx,val_idx in file_fold_split.split(filtered_input,output):
 
@@ -415,7 +425,7 @@ def normal_training(filtered_input,output,args,folder,hidden_layers):
             output_train,output_val=output[training_idx],output[val_idx]
 
             model,early_stop=neural_network_model(filtered_input.shape[1],args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.use_l2,args.use_l1,args.r,args.more_layers,hidden_layers)
-            training=model.fit(input_train, output_train,validation_data=(input_val, output_val),epochs=args.epochs, batch_size=batch_size, verbose=1,callbacks=[early_stop])
+            training=model.fit(input_train, output_train,validation_data=(input_val, output_val),epochs=args.epochs, batch_size=batch_size, verbose=1,callbacks=[early_stop,checkpoint])
 
             stop_epoch=len(training.history['loss'])
             early_stop_epochs.append(stop_epoch)
@@ -495,7 +505,7 @@ def main():
     folder=create_folder(args.optimizer,args.momentum,args.lr,args.num_of_layers,args.hid_layer_func,args.loss_func,args.r,hidden_layers) #folder to save the plot
 
         
-    original_data=pd.read_csv("alzheimers_disease_data.csv")
+    original_data=pd.read_csv("../alzheimers_disease_data.csv")
     input=original_data.drop(["Diagnosis","PatientID","DoctorInCharge"], axis=1)
     
     output=original_data["Diagnosis"].to_numpy()
