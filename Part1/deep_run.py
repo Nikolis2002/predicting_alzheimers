@@ -55,7 +55,7 @@ class NeuronComboRunner:
                 text=True,
                 timeout=14400
             )
-            print(f"✓ Completed in {time.time()-start_time:.1f}s")
+            print(f"Completed in {time.time()-start_time:.1f}s")
             return True
 
         except subprocess.TimeoutExpired:

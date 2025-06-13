@@ -5,7 +5,7 @@ import tensorflow as tf
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-import argparse
+import argparse, pickle
 from pymongo import MongoClient
 import os, pprint
 from datetime import datetime
@@ -408,6 +408,7 @@ def normal_training(filtered_input,output,args,folder,hidden_layers):
         val_loss_table=[]
         loss_table=[]
         early_stop_epochs=[]
+        io_vector=[]
         batch_size=32
 
         checkpoint = tf.keras.callbacks.ModelCheckpoint(
@@ -435,6 +436,7 @@ def normal_training(filtered_input,output,args,folder,hidden_layers):
 
 
             evaluation=model.evaluate(input_val,output_val,verbose=0)
+            io_vector.append(((input_train, output_train),(input_val, output_val)))
             print(f"Round {round}: Loss:{evaluation[0]}, Accuracy:{evaluation[1]}")
             round+=1
             evals.append(evaluation)
@@ -442,6 +444,17 @@ def normal_training(filtered_input,output,args,folder,hidden_layers):
         max_epochs = max(early_stop_epochs)
         plot(args,loss_table,val_loss_table,folder,max_epochs)
 
+
+        best_idx = max(range(len(evals)),
+               key=lambda i: evals[i][1])
+
+        best_evaluation = evals[best_idx]
+        print("This is the best eval:",best_evaluation)
+        train_idx, val_idx = io_vector[best_idx]
+
+        with open("../best_split.pkl", "wb") as f:
+            pickle.dump((train_idx, val_idx), f)
+        print(f"Saved best split (fold {best_idx+1}) → best_split.pkl")
 
         
         #write the results to mongodb for further analysis

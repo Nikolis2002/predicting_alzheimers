@@ -78,11 +78,11 @@ class GPUExperimentRunner:
                 text=True,
                 timeout=14400  # 4 hour timeout
             )
-            print(f"✓ Completed in {time.time()-start_time:.1f}s")
+            print(f"Completed in {time.time()-start_time:.1f}s")
             return True
             
         except subprocess.TimeoutExpired:
-            print(f"✗ Timeout after {time.time()-start_time:.1f}s")
+            print(f"Timeout after {time.time()-start_time:.1f}s")
             return False
             
         except subprocess.CalledProcessError as e:
