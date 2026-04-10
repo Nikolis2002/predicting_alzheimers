@@ -1,50 +1,109 @@
-# Alzheimer’s Disease Prediction & Feature-Selection GA
+# Alzheimer's Disease Prediction and Genetic Algorithm Feature Selection
 
-## Part 1: Fine-Tuning a Neural Network for Alzheimer’s Prediction
+A two-part machine learning project. Part 1 fine-tunes neural networks (single-layer and multi-layer) to classify Alzheimer's disease risk. Part 2 applies a genetic algorithm to identify the optimal feature subset that maximizes model accuracy while minimizing the number of input features.
 
-This section implements the fine-tuning of a neural network to predict Alzheimer’s disease. The repository structure is:
+## Tech Stack
 
-- **`alzheimers_prediction.py`**  
-  The main script: performs hyperparameter search and fine-tuning of a single-hidden-layer network.
+| Component | Technology |
+|-----------|-----------|
+| ML Framework | TensorFlow / Keras |
+| Experiment Tracking | MongoDB (`pymongo`) |
+| Data Processing | Pandas, NumPy, scikit-learn |
+| Visualization | Matplotlib |
+| GPU Acceleration | CUDA (via `numba`) |
+| Dataset | `alzheimers_disease_data.csv` (tabular clinical data) |
 
-- **`run.py`**  
-  Launches experiments with fixed hyperparameters on the one-layer model.
+## Project Structure
 
-- **`results.py`**  
-  Connects to MongoDB, retrieves stored metrics, and computes summary statistics to compare against the plots.
+```
+predicting_alzheimers/
+├── alzheimers_disease_data.csv     # Raw dataset
+├── best_model.keras                # Best single-layer model checkpoint
+├── best_model_geneticv2.keras      # Best model from GA-selected features
+├── best_split.pkl                  # Best train/test split (reproducibility)
+├── Part1/
+│   ├── alzheimers_prediction.py    # Hyperparameter search + single-layer NN fine-tuning
+│   ├── run.py                      # Fixed-hyperparameter run (single-layer)
+│   ├── deep_run.py                 # Fixed-hyperparameter run (multi-layer)
+│   ├── results.py                  # MongoDB → summary stats (single-layer)
+│   ├── deep_results.py             # MongoDB → summary stats (multi-layer)
+│   ├── screenshots/                # Loss & accuracy plots (L2 regularization)
+│   └── screenshots_l1/             # Loss & accuracy plots (L1 regularization)
+└── Part2/
+    ├── genetic_algo.py             # Genetic algorithm for feature selection
+    ├── run_experiments.py          # Batch GA experiment runner
+    ├── avg_results.py              # Fetch GA results from MongoDB + plot
+    ├── compare_nns.py              # Retrain NN on GA-selected feature subsets
+    ├── genetic_training_results.png
+    └── summary_results.csv
+```
 
-- **`deep_run.py`**  
-  Runs the same experiments as `run.py`, but for architectures with multiple hidden layers.
+## Architecture Overview
 
-- **`deep_results.py`**  
-  Processes and visualizes the MongoDB results for the multi-layer experiments.
+```mermaid
+flowchart TD
+    DATA[alzheimers_disease_data.csv] --> PREP[Pre-processing\nStandardScaler + OneHotEncoder\nStratifiedShuffleSplit]
 
-- **`screenshots/`**  
-  Contains loss & accuracy plots for single-layer and multi-layer models using **L2** regularization.
+    subgraph Part 1 - Neural Network Fine-Tuning
+        PREP --> HP[Hyperparameter Search\nlearning rate, L1/L2, epochs]
+        HP --> NN1[Single-layer NN]
+        HP --> NN2[Multi-layer Deep NN]
+        NN1 & NN2 --> MONGO1[(MongoDB\nexperiment results)]
+        MONGO1 --> RESULTS[results.py / deep_results.py\nSummary Statistics]
+    end
 
-- **`screenshots_l1/`**  
-  Contains the corresponding plots when using **L1** regularization.
+    subgraph Part 2 - Genetic Algorithm Feature Selection
+        PREP --> GA[Genetic Algorithm\npopulation → selection → crossover → mutation]
+        GA --> FITNESS[Fitness: NN Accuracy\non feature subset]
+        FITNESS --> MONGO2[(MongoDB\nGA experiment results)]
+        MONGO2 --> AVG[avg_results.py\nPlot per-generation fitness]
+        GA --> BEST_FEAT[Best Feature Subset]
+        BEST_FEAT --> COMPARE[compare_nns.py\nRetrain and evaluate]
+    end
+```
 
-> **Note:** A running MongoDB instance with the experiment data is required to reproduce the metric-vs-plot comparisons.
+## How to Run
 
----
+### Prerequisites
 
-## Part 2: Genetic Algorithm for Feature Selection
+- MongoDB instance running at `localhost:27017`
+- GPU recommended (CUDA configured with `numba`)
 
-All Part 2 code is in the `Part2/` folder:
+### Part 1 — Neural Network Training
 
-- **`genetic_algo.py`**  
-  Core implementation of the genetic algorithm for feature selection. (Full, commented source is in the repo.)
+```bash
+cd Part1
 
-- **`run_experiments.py`**  
-  Automates running `genetic_algo.py` over all desired hyperparameter combinations.
+# Hyperparameter search (stores all results to MongoDB)
+python alzheimers_prediction.py
 
-- **`avg_results.py`**  
-  Fetches experiment results from MongoDB and generates plots for each table row.
+# Run with fixed hyperparameters
+python run.py           # single-layer
+python deep_run.py      # multi-layer
 
-- **`compare_nns.py`**  
-  Retrains the neural network on the selected feature subsets. (See the “Evaluation” section of the report for details.)
+# Retrieve and print results from MongoDB
+python results.py
+python deep_results.py
+```
 
+### Part 2 — Genetic Algorithm Feature Selection
 
+```bash
+cd Part2
 
-> **Note:** For examiner:If similar code exists you can check the commit history to see that this code is the orginal,also last 3 hours the repository became private for same reasons.
+# Run GA experiments over multiple configurations
+python run_experiments.py
+
+# Visualize generation-by-generation fitness
+python avg_results.py
+
+# Evaluate the best feature subset by retraining
+python compare_nns.py
+```
+
+## Key Notes
+
+- All experiment metrics (loss, accuracy, hyperparameters) are stored to MongoDB for reproducible analysis.
+- Part 1 compares L1 vs. L2 regularization across single-layer and multi-layer architectures.
+- The GA in Part 2 evolves binary chromosome vectors where each bit represents inclusion/exclusion of a feature; fitness is measured by cross-validated NN accuracy.
+- Pre-trained model checkpoints (`best_model.keras`, `best_model_geneticv2.keras`) are included for immediate inference.
