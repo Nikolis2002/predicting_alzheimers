@@ -107,3 +107,4 @@ python compare_nns.py
 - Part 1 compares L1 vs. L2 regularization across single-layer and multi-layer architectures.
 - The GA in Part 2 evolves binary chromosome vectors where each bit represents inclusion/exclusion of a feature; fitness is measured by cross-validated NN accuracy.
 - Pre-trained model checkpoints (`best_model.keras`, `best_model_geneticv2.keras`) are included for immediate inference.
+
