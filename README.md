@@ -21,20 +21,22 @@ predicting_alzheimers/
 ├── best_model.keras                # Best single-layer model checkpoint
 ├── best_model_geneticv2.keras      # Best model from GA-selected features
 ├── best_split.pkl                  # Best train/test split (reproducibility)
-├── Part1/
+├── part-1-neural-network/
 │   ├── alzheimers_prediction.py    # Hyperparameter search + single-layer NN fine-tuning
 │   ├── run.py                      # Fixed-hyperparameter run (single-layer)
 │   ├── deep_run.py                 # Fixed-hyperparameter run (multi-layer)
 │   ├── results.py                  # MongoDB → summary stats (single-layer)
 │   ├── deep_results.py             # MongoDB → summary stats (multi-layer)
-│   ├── screenshots/                # Loss & accuracy plots (L2 regularization)
-│   └── screenshots_l1/             # Loss & accuracy plots (L1 regularization)
-└── Part2/
+│   ├── assignment.pdf              # Original assignment specification
+│   ├── results/                    # Loss & accuracy plots (L2 regularization)
+│   └── results-l1/                 # Loss & accuracy plots (L1 regularization)
+└── part-2-genetic-algorithm/
     ├── genetic_algo.py             # Genetic algorithm for feature selection
     ├── run_experiments.py          # Batch GA experiment runner
     ├── avg_results.py              # Fetch GA results from MongoDB + plot
     ├── compare_nns.py              # Retrain NN on GA-selected feature subsets
     ├── genetic_training_results.png
+    ├── results/                    # Per-generation fitness plots
     └── summary_results.csv
 ```
 
@@ -72,7 +74,7 @@ flowchart TD
 ### Part 1 — Neural Network Training
 
 ```bash
-cd Part1
+cd part-1-neural-network
 
 # Hyperparameter search (stores all results to MongoDB)
 python alzheimers_prediction.py
@@ -89,7 +91,7 @@ python deep_results.py
 ### Part 2 — Genetic Algorithm Feature Selection
 
 ```bash
-cd Part2
+cd part-2-genetic-algorithm
 
 # Run GA experiments over multiple configurations
 python run_experiments.py
